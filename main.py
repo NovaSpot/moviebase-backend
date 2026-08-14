@@ -10,6 +10,10 @@ class Item(BaseModel):
     key: str
     value: str
 
+@app.get("/")
+async def root():
+    return {"status": "ok", "message": "FastAPI + Redis backend is running!"}
+
 # 1. Input / Set data
 @app.post("/set")
 async def set_key(item: Item):
