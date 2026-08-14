@@ -20,8 +20,8 @@ async def set_key(item: Item):
     await r.set(item.key, item.value)
     return {"message": "Saved", "key": item.key, "value": item.value}
 
-# 2. Fetch / Get data
-@app.get("/get/{key}")
+# 2. Fetch / Get data ... in your browser go to https://xyz.onrender.com/get/<replace this with the key> to get a json output
+@app.get("/get/{key}")  
 async def get_key(key: str):
     data = await r.get(key)
     if data is None:
