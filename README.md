@@ -6,9 +6,9 @@ just a trial run for a movie site backend
 2. in render, add web service, backend, git repo, authorise
 3. select the your forked repo
 4. change the config settings: 
-   start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-   build command: `pip install -r requirements.txt`
-   add env variable: key: REDIS_URL, value: redis://default:xyz@abc.db.redis.io:12125 from the redis dashboard
+   * start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+   * build command: `pip install -r requirements.txt`
+   * add env variable: key: REDIS_URL, value: redis://default:xyz@abc.db.redis.io:12125 from the redis dashboard
 5. deploy
 
 # to check if it's working
