@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import redis.asyncio as redis
 
-app = FastAPI()
+app = FastAPI();
 r = redis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379"), decode_responses=True)
 
 class Movie(BaseModel):
