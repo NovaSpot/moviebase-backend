@@ -6,24 +6,41 @@ import redis.asyncio as redis
 app = FastAPI()
 r = redis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379"), decode_responses=True)
 
-class Item(BaseModel):
-    key: str
-    value: str
+class Movie(BaseModel):
+    id: str
+    title: str
+    year: str
+    rating: str
+    description: str
+    thumbnail: str
+    videoUrl: str
 
 @app.get("/")
 async def root():
     return {"status": "ok", "message": "FastAPI + Redis backend is running!"}
 
-# 1. Input / Set data
-@app.post("/set")
-async def set_key(item: Item):
-    await r.set(item.key, item.value)
-    return {"message": "Saved", "key": item.key, "value": item.value}
+# 1. Add a movie
+@app.post("/movies")
+async def add_movie(movie: Movie):
+    await r.hset(f"movie:{movie.id}", mapping=movie.model_dump())
+    await r.sadd("movie_ids", movie.id)
+    return {"message": "Saved", "movie": movie}
 
-# 2. Fetch / Get data ... in your browser go to https://xyz.onrender.com/get/<replace this with the key> to get a json output
-@app.get("/get/{key}")  
-async def get_key(key: str):
-    data = await r.get(key)
-    if data is None:
-        return {"key": key, "value": None, "status": "empty"}
-    return {"key": key, "value": data, "status": "found"}
+# 2. Get all movies
+@app.get("/movies")
+async def get_movies():
+    ids = await r.smembers("movie_ids")
+    movies = []
+    for movie_id in ids:
+        data = await r.hgetall(f"movie:{movie_id}")
+        if data:
+            movies.append(data)
+    return movies
+
+# 3. Get one movie by id
+@app.get("/movies/{id}")
+async def get_movie(id: str):
+    data = await r.hgetall(f"movie:{id}")
+    if not data:
+        return {"id": id, "status": "not found"}
+    return data
